@@ -1,0 +1,52 @@
+/*
+Double Nested Loops
+*/
+
+program nested;
+#include ("stdlib.hhf");
+
+static
+i : int8;
+j : int8;
+
+begin nested;
+stdout.put("Feed Me i: ");
+stdin.get(i);
+stdout.put("Feed Me j: ");
+stdin.get(j);
+
+
+ForLp: //first loop 1->i
+InitializeForLp:
+mov(1, BL);
+ForLpTerminationTest:
+cmp(BL, i);
+jg ForLpDone;
+ForLpBody:
+stdout.puti8( BL );
+stdout.put( nl );
+
+
+ForLp2: //second loop j->1
+InitializeForLp2:
+mov(j, CL);
+ForLpTerminationTest2:
+cmp(CL, 0);
+jle ForLpDone2;
+ForLpBody2:
+stdout.puti8( CL );
+stdout.put( " " );
+
+ForLpIncrement2:
+dec(CL);
+jmp ForLpTerminationTest2;
+ForLpDone2:
+stdout.put( nl );
+
+
+ForLpIncrement:
+inc(BL);
+jmp ForLpTerminationTest;
+ForLpDone:
+
+end nested;

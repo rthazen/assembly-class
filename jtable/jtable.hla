@@ -1,0 +1,78 @@
+program JTable;
+
+#include("stdlib.hhf");
+
+static
+    startingValue: int32; // Input value at the start
+    // Additional values in table based on the startingValue
+    add1: int32;
+    add2: int32;
+    add3: int32;
+    add4: int32;
+    add5: int32;
+    add6: int32;
+    add7: int32;
+    add8: int32;
+    add9: int32;
+    add10: int32;
+    add11: int32;
+    add12: int32;
+
+begin JTable;
+
+// Prompt user to enter value
+stdout.put("Gimme a starting value: ");
+stdin.get( startingValue );
+
+// get the value into the register EAX
+mov(startingValue, EAX);
+
+// Display first row of all the startingValue, give a field width of 2 for all values, end with a newline
+stdout.put( startingValue:2, " ", startingValue:2, " ", startingValue:2, " ", startingValue:2, " ", startingValue:2, nl );
+
+// Start adding 1 to each value other than the startingValue and based on the previous value
+add( 1, EAX );
+mov(EAX, add1);
+add( 1, EAX );
+mov(EAX, add2);
+add( 1, EAX );
+mov(EAX, add3);
+add( 1, EAX );
+mov(EAX, add4);
+
+// Row 2, give a field width of 2 for all values, end with a newline
+stdout.put( add1:2, " ", add2:2, " ", startingValue:2, " ", add3:2, " ", add4:2, nl );
+
+// Add 1 to each value other than the startingValue and based on the previous value
+add( 1, EAX );
+mov(EAX, add5);
+add( 1, EAX );
+mov(EAX, add6);
+add( 1, EAX );
+mov(EAX, add7);
+
+// Row 3, give a field width of 2 for all values, end with a newline
+stdout.put( startingValue:2, " ", add5:2, " ", startingValue:2, " ", add6:2, " ", add7, nl );
+
+// Add 1 to each value other than the startingValue and based on the previous value
+add( 1, EAX );
+mov(EAX, add8);
+add( 1, EAX );
+mov(EAX, add9);
+add( 1, EAX );
+mov(EAX, add10);
+
+// Row 4, give a field width of 2 for all values, end with a newline
+stdout.put( startingValue:2, " ", add8:2, " ", startingValue:2, " ", add9:2, " ", add10, nl );
+
+// Add 1 to each value other than the startingValue and based on the previous value
+add( 1, EAX );
+mov(EAX, add11);
+add( 1, EAX );
+mov(EAX, add12);
+
+//Row 5, give a field width of 2 for all values, end with a newline
+stdout.put( startingValue:2, " ", startingValue:2, " ", startingValue:2, " ", add11:2, " ", add12:2, nl );
+
+
+end JTable;

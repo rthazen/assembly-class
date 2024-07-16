@@ -1,0 +1,75 @@
+program MatchGame;
+
+#include( "stdlib.hhf" )
+
+static
+    matchNumber: int32;         // Variable to store the match number
+    userInput: int32;           // Variable to store user input numbers
+    positiveCount: int32 := 0;  // Count of positive numbers entered
+    negativeCount: int32 := 0;  // Count of negative numbers entered
+    maxPositiveStreak: int32 := 0;  // Longest positive streak
+    maxNegativeStreak: int32 := 0;  // Longest negative streak
+
+begin MatchGame; 
+
+    // Prompt for the match number
+    stdout.put("Gimme a goal number: ");
+    stdin.geti32();  // Read an int32 value from the user
+    mov(eax, matchNumber);  // Move the input value into matchNumber variable
+
+input_loop:
+    // Prompt for user input
+    stdout.put("Feed Me: ");
+    stdin.geti32();  // Read an int32 value from the user
+    mov(eax, userInput);  // Move the input value into userInput variable
+
+    // Compare userInput with matchNumber
+    cmp(eax, matchNumber);  // Compare userInput with matchNumber
+
+    je hit_match;  // Jump if userInput equals matchNumber
+
+    // Check if userInput is positive or negative
+    test(eax, eax);  // Test the sign of userInput
+    jns positive_input;  // Jump if userInput is non-negative (positive or zero)
+
+    // Handling negative numbers
+    inc(negativeCount);  // Increment negative count
+
+    // Check and update longest negative streak
+    mov(maxNegativeStreak, ecx);  // Load maxNegativeStreak into register for comparison
+
+    cmp(negativeCount, ecx);  // Compare negativeCount with maxNegativeStreak
+    jle continue_input;  // Jump if negativeCount is less than or equal to maxNegativeStreak
+    mov(negativeCount, maxNegativeStreak);  // Update maxNegativeStreak
+
+    jmp continue_input;  // Continue to next input
+
+positive_input:
+    // Handling positive numbers
+    inc(positiveCount);  // Increment positive count
+
+    // Check and update longest positive streak
+     mov(maxPositiveStreak, edx);  // Load maxPositiveStreak into register for comparison
+    cmp(positiveCount, edx);  // Compare positiveCount with maxPositiveStreak
+    jle continue_input;  // Jump if positiveCount is less than or equal to maxPositiveStreak
+    mov(positiveCount, maxPositiveStreak);  // Update maxPositiveStreak
+
+continue_input:
+    jmp input_loop;  // Jump back to input loop
+
+hit_match:
+    // Output when userInput equals matchNumber
+    stdout.put("You Hit The Match!", nl);
+    stdout.put("You Fed Me: ");
+    stdout.puti32(positiveCount);
+    stdout.put(" positive quantities and ");
+    stdout.puti32(negativeCount);
+    stdout.put(" negative quantities", nl);
+    stdout.put("Longest Positive Streak Of Quantities: ");
+    stdout.puti32(maxPositiveStreak);
+    stdout.newln();
+    stdout.put("Longest Negative Streak Of Quantities: ");
+    stdout.puti32(maxNegativeStreak);
+    stdout.newln();
+
+end MatchGame; 

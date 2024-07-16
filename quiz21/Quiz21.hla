@@ -1,0 +1,60 @@
+program Quiz21;
+
+#include( "stdlib.hhf" )
+
+static
+    xHold: int32;    // Variable to store first input and hold to compare
+    x: int32;       // Variable to store first input
+    y: int32;       // Variable to store second input
+    answer1: int32; // Variables to store calculated values
+    answer2: int32;
+    answer3: int32;
+    answer4: int32;
+
+begin Quiz21;
+
+    // Prompt for first value
+    stdout.put( "Feed Me: " );
+    stdin.geti32();
+    mov( eax, x );  // Move input into x
+    mov( eax, xHold );  // Move input into xHold as well so it does not change
+
+    // Prompt for second value
+    stdout.put( "Feed Me: " );
+    stdin.geti32();
+    mov( eax, y );  // Move input into y
+
+    // Calculate X values
+    add(1, x); // Calculate x + 1
+    mov( x, answer1);  
+    add(1, x); // Calculate x + 2
+    mov( x, answer2);  
+
+    // Calculate Y values
+    add(1, y); // Calculate y + 1
+    mov( y, answer3);  
+    add(1, y); // Calculate y + 2
+    mov( y, answer4);  
+
+    // Print answers ensuring uniqueness
+    stdout.put( answer1, nl );  // Print answer1
+    stdout.put( answer2, nl );  // Print answer2
+
+    mov( answer3, ebx);
+
+    // Check answer3 if unique
+    cmp( ebx, xHold );
+    // if answer3 not unique skip printing the 4th value
+    je skip_answer4;
+    // if answer3 is unique carry on printing the values
+    stdout.put( answer3, nl );
+    stdout.put( answer4, nl );
+    // jump over the skip_answer if printing all values
+    jmp end_printing;
+
+skip_answer4:
+    stdout.put( answer3, nl );
+
+end_printing:
+
+end Quiz21;

@@ -1,0 +1,66 @@
+program BinaryOutput;  // Define the program name
+
+#include( "stdlib.hhf" )
+
+static
+   iDataValue : int8;  // Variable to store the input value
+
+begin BinaryOutput;  // Begin the main program block
+
+    stdout.put( "Gimme a decimal value to print: ", nl );  // Prompt for input
+    stdin.get( iDataValue );  // Read an int8 value from standard input
+    mov( iDataValue, BH );  // Move the input value into BH register
+
+    stdout.put("Number in binary is: ", nl);  // Print initial message
+
+    // Print each bit from the most significant to the least significant
+
+    // 1st bit
+    shl(1, BH); // Shift BH left to position the bit in the carry flag
+    lahf();     // Load EFLAGS into AH register
+    and( %0000_0001, AH );  // Mask all bits except the Carry Flag
+    stdout.puti8( AH );     // Output the bit (0 or 1)
+
+    // 2nd bit
+    shl(1, BH); // Shift BH left
+    lahf();     // Load EFLAGS into AH
+    and( %0000_0001, AH );  // Mask all bits except the Carry Flag
+    stdout.puti8( AH );     // Output the bit
+
+    // 3rd bit
+    shl(1, BH); // Shift BH left
+    lahf();     // Load EFLAGS into AH
+    and( %0000_0001, AH );  // Mask all bits except the Carry Flag
+    stdout.puti8( AH );     // Output the bit
+
+    // 4th bit
+    shl(1, BH); // Shift BH left
+    lahf();     // Load EFLAGS into AH
+    and( %0000_0001, AH );  // Mask all bits except the Carry Flag
+    stdout.puti8( AH );     // Output the bit
+
+    // 5th bit
+    shl(1, BH); // Shift BH left
+    lahf();     // Load EFLAGS into AH
+    and( %0000_0001, AH );  // Mask all bits except the Carry Flag
+    stdout.puti8( AH );     // Output the bit
+
+    // 6th bit
+    shl(1, BH); // Shift BH left
+    lahf();     // Load EFLAGS into AH
+    and( %0000_0001, AH );  // Mask all bits except the Carry Flag
+    stdout.puti8( AH );     // Output the bit
+
+    // 7th bit
+    shl(1, BH); // Shift BH left
+    lahf();     // Load EFLAGS into AH
+    and( %0000_0001, AH );  // Mask all bits except the Carry Flag
+    stdout.puti8( AH );     // Output the bit
+
+    // 8th bit
+    shl(1, BH); // Shift BH left
+    lahf();     // Load EFLAGS into AH
+    and( %0000_0001, AH );  // Mask all bits except the Carry Flag
+    stdout.puti8( AH );     // Output the bit
+
+end BinaryOutput;  // End the main program block

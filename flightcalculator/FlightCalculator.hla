@@ -1,0 +1,137 @@
+program AirlineTicketCalculator;
+
+#include( "stdlib.hhf" )
+
+static
+    userInput: uns8;          // Variable to store user input as uns8 (2 hex digits)
+    totalFees: int32 := 0;    // Variable to accumulate total fees
+    milesFlown: uns8;         // Variable to store miles flown in 100 mile increments
+    numBags: uns8;            // Variable to store number of checked bags
+    mealPurchased: boolean;   // Flag to indicate if meal is purchased
+    firstClass: boolean;      // Flag to indicate first class ticket
+
+begin AirlineTicketCalculator;
+
+    // Prompt and read user input
+    stdout.put( "Feed me (2 hex digits): " );
+    stdin.get(bl);
+    mov( bl, userInput );     // Move input to userInput
+
+    stdout.put(userInput, nl);
+    stdout.putu8(bl);
+
+    // Extract information from the packed bit field
+//     mov( bl, al );            // Move userInput to bl
+
+//     // Extract number of checked bags (bits 0-1)
+//     and( 3, bl );             // Mask bits 0-1
+//     mov( numBags, bl );       // Store number of checked bags
+
+//     // Extract miles flown (bits 2-5)
+//     mov( bl, al );            // Reload userInput to bl
+//     shr( 2, bl );             // Shift right to isolate bits 2-5
+//     and( 15, bl );            // Mask bits 2-5
+//     mov( milesFlown, bl );    // Store miles flown
+
+//     // Validate miles flown
+//     cmp( milesFlown, 0 );
+//     je  invalid_miles;
+
+//     // Extract meal purchased (bit 6)
+//     mov( bl, al );            // Reload userInput to bl
+//     shr( 6, bl );             // Shift right to isolate bit 6
+//     and( 1, bl );             // Mask bit 6 (meal purchased flag)
+//     cmp( bl, 1 );
+//     je  meal_yes;
+//     mov( false, mealPurchased );
+//     jmp check_first_class;
+
+// meal_yes:
+//     mov( true, mealPurchased );
+
+// check_first_class:
+//     // Extract first class ticket (bit 7)
+//     mov( bl, al );            // Reload userInput to bl
+//     shr( 7, bl );             // Shift right to isolate bit 7
+//     and( 1, bl );             // Mask bit 7 (first class flag)
+//     cmp( bl, 1 );
+//     je  first_class_yes;
+//     mov( false, firstClass );
+//     jmp calculate_fees;
+
+// first_class_yes:
+//     mov( true, firstClass );
+
+// calculate_fees:
+//     // Calculate fees based on miles flown
+//     movzx( milesFlown, eax ); // Zero-extend milesFlown into eax
+//     mov( 50, ecx );
+//     imul( eax, ecx );         // eax = milesFlown * 50
+//     add( totalFees, eax );    // Add to totalFees
+
+//     // Calculate fees based on number of bags
+//     movzx( eax, numBags );    // Zero-extend numBags into eax
+//     mov( ecx, 25 );
+//     imul( eax, ecx );         // eax = numBags * 25
+//     add( totalFees, eax );    // Add to totalFees
+
+//     // Add fee for meal if purchased
+//     cmp( mealPurchased, true );
+//     je  add_meal_fee;
+//     jmp check_first_class_fee;
+
+// add_meal_fee:
+//     add( totalFees, 10 );     // $10 for meal
+
+// check_first_class_fee:
+//     // Multiply totalFees by 2 if first class
+//     cmp( firstClass, true );
+//     je  multiply_first_class_fee;
+//     jmp print_total;
+
+// multiply_first_class_fee:
+//     shl( totalFees, 1 );      // Multiply totalFees by 2
+
+// print_total:
+//     // Print ticket type
+//     cmp( firstClass, true );
+//     je  print_first_class;
+//     stdout.put( "Economy ticket", nl );
+//     jmp print_meal;
+
+// print_first_class:
+//     stdout.put( "First class ticket", nl );
+
+// print_meal:
+//     // Print meal info
+//     cmp( mealPurchased, true );
+//     je  print_meal_yes;
+//     stdout.put( "No meal", nl );
+//     jmp print_bags;
+
+// print_meal_yes:
+//     stdout.put( "Meal purchased", nl );
+
+// print_bags:
+//     // Print bags info
+//     stdout.put( numBags, " bags", nl );
+
+// print_miles:
+//     // Print miles flown
+//     movzx( eax, milesFlown ); // Zero-extend milesFlown into eax
+//     imul( eax, 100 );         // eax = milesFlown * 100
+//     stdout.put( eax, " miles flown", nl );
+
+// print_total_fees:
+//     // Print total fees
+//     stdout.put( "Total Fees = $", totalFees, nl );
+
+// end_program:
+
+// end AirlineTicketCalculator;
+
+// invalid_miles:
+//     stdout.put( "Miles flown cannot be zero!", nl );
+//     jmp end_program;
+
+end AirlineTicketCalculator;

@@ -1,0 +1,23 @@
+// File: doubledown.hla
+program doubleDown;
+#include( "stdlib.hhf" );
+
+static
+iDataValue : int32 := 0; // the value to double
+
+begin doubleDown;
+
+// Prompt the user
+stdout.put( "Please provide a value to double: " );
+stdin.get( iDataValue );
+// get the value into the register EAX
+mov( iDataValue, EAX );
+mov( 0, EBX );
+// double the value
+add( EAX, EBX );
+add( EAX, EBX );
+// stuff the value back into iDataValue
+mov( EBX, iDataValue );
+stdout.put( "Twice the input equals ", iDataValue, nl );
+
+end doubleDown;

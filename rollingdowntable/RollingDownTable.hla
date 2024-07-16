@@ -1,0 +1,113 @@
+program RollingDownTable;  // Define the program name
+
+#include( "stdlib.hhf" )
+
+static
+    startingValue: int8;  // Variable to store the user-provided starting value
+
+begin RollingDownTable;  // Begin the main program block
+
+    // Prompt for the starting value
+    stdout.put("Gimme a starting value: ");
+    stdin.geti8();  // Read an int8 value from the user
+    mov(al, startingValue);  // Move the input value into startingValue variable
+
+    // Print the header for the rolling down table
+    stdout.put("Rolling Down Table", nl);
+
+    // First row: Original values use memory (al, bl, cl, dl)
+    stdout.puti8(startingValue);
+    stdout.put(": ");
+    add(1, al);
+    mov(al, bl);
+    stdout.puti8(bl);
+    stdout.put(": ");
+    mov(bl, cl);
+    add(1, cl);
+    stdout.puti8(cl);
+    stdout.put(": ");
+    mov(cl, dl);
+    add(1, dl);
+    
+    stdout.puti8(dl);
+    stdout.put(": ");
+    stdout.put(nl);
+
+    // Second row: Values ROL'ed from the first row, but use different memory (ah, bh, ch, dh)
+    rol(1, startingValue);
+    mov(startingValue, ah);
+    stdout.puti8(ah);
+    stdout.put(" ");
+    mov(ah, bh);
+    add(2, bh);
+    
+    stdout.puti8(bh);
+    stdout.put(" ");
+    mov(bh, ch);
+    add(2, ch);
+    
+    stdout.puti8(ch);
+    stdout.put(" ");
+    mov(ch, dh);
+    add(2, dh);
+    
+    stdout.puti8(dh);
+    stdout.put(" ");
+    stdout.put(nl);
+
+    // Third row: Values ROR'ed from the first row, use memory (al, bl, cl, dl)
+    ror(1, al); // Rotate al right by 1 bit
+    and(%01111111, al); // Mask out MSB of al
+    mov(al, startingValue);
+    stdout.put(startingValue, "  ");
+
+    ror( 1, bl ); // Rotate bl right by 1 bit
+    and(%01111111, bl); // Mask out MSB of bl
+    mov(bl, startingValue);
+    stdout.put(startingValue, "  ");
+
+    ror(1, cl); // Rotate cl right by 1 bit
+    and(%01111111, cl); // Mask out MSB of cl
+    mov(cl, startingValue);
+    stdout.put(startingValue, "  ");
+
+    ror(1, dl); // Rotate dl right by 1 bit
+    and(%01111111, dl); // Mask out MSB of dl
+    mov(dl, startingValue);
+    stdout.put(startingValue, nl);
+
+    // Fourth row: Values ROL'ed from memory (ah, bh, ch, dh)
+    rol(1, ah);
+    stdout.puti8(ah);
+    stdout.put(" ");
+    rol(1, bh);
+    stdout.puti8(bh);
+    stdout.put(" ");
+    rol(1, ch);
+    stdout.puti8(ch);
+    stdout.put(" ");
+    rol(1, dh);
+    stdout.puti8(dh);
+    stdout.put(nl);
+
+    // Fifth row: Values ROR'ed from the first row again, use memory (al, bl, cl, dl)
+    ror(1, al);
+    stdout.puti8(al);
+    stdout.put(" ");
+    ror(1, bl);
+    stdout.puti8(bl);
+    stdout.put(" ");
+    
+    // for some reason I kept getting negatives here if I didn't use the mask
+    ror(1, cl); // Rotate cl right by 1 bit
+    and(%01111111, cl); // Mask out MSB of cl
+    mov(cl, startingValue);
+    stdout.put(startingValue, "  ");
+
+    // for some reason I kept getting negatives here if I didn't use the mask
+    ror(1, dl); // Rotate dl right by 1 bit
+    and(%01111111, dl); // Mask out MSB of dl
+    mov(dl, startingValue);
+    stdout.put(startingValue, nl);
+
+end RollingDownTable;  // End the main program block

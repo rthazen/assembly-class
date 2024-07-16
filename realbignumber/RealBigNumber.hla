@@ -1,0 +1,51 @@
+program RealBigNumber;
+#include("stdlib.hhf")
+
+static
+    n: int8;         // Variable to store the user-provided value
+
+begin RealBigNumber;
+
+    // Prompt for the value of n
+    stdout.put("Gimme a decimal value to use for n: ");
+    stdin.geti8();         // Read the input value into al
+    mov(al, n);            // Move the input value into the n variable
+    mov(n, bl);            // Store the original value of n in bl
+
+    // Print the header for the output
+    stdout.put("Here's your answer: ");
+
+    start_outer_loop:
+        // Check if n is 0, if so, end the outer loop
+        cmp(n, 0);
+        je end_program;
+
+        // Initialize al to 1 for the inner loop
+        mov(1, al);
+
+        start_inner_loop:
+            // Print the current value of al
+            stdout.puti8(al);
+
+            // Check if al equals n, if so, end the inner loop
+            cmp(al, n);
+            je end_inner_loop;
+
+            // Increment al to print the next number
+            inc(al);
+
+            // Jump back to the start of the inner loop
+            jmp start_inner_loop;
+
+        end_inner_loop:
+            // Decrement n for the next iteration of the outer loop
+            dec(n);
+
+            // Jump back to the start of the outer loop
+            jmp start_outer_loop;
+
+    end_program:
+        // Print a newline character at the end of the program
+        stdout.put(nl);
+
+end RealBigNumber;

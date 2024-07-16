@@ -1,0 +1,16 @@
+program FavoriteFood;
+
+#include("stdlib.hhf");
+
+begin FavoriteFood;
+
+    // Display "PIZZA", end row with a newline
+    stdout.put(
+        "PPPP   ", "IIIII  ", "ZZZZZ  ", "ZZZZZ  ", "  A    ", nl,
+        "P   P  ", "  I    ", "   Z   ", "   Z   ", " A A   ", nl,
+        "PPPP   ", "  I    ", "  Z    ", "  Z    ", "AAAAA  ", nl,
+        "P      ", "  I    ", " Z     ", " Z     ", "A   A  ", nl,
+        "P      ", "IIIII  ", "ZZZZZ  ", "ZZZZZ  ", "A   A  ", nl, nl
+    );
+
+end FavoriteFood;

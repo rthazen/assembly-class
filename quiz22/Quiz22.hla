@@ -1,0 +1,105 @@
+program Quiz22;
+
+#include( "stdlib.hhf" )
+
+static
+    x: int32;       // Variable to store first input
+    y: int32;       // Variable to store second input
+    first: int32;   // Variable to store the larger of the two inputs
+    second: int32;  // Variable to store the smaller of the two inputs
+    smallestValue: int32; // Loop counter
+
+begin Quiz22;
+
+    // Prompt for first value
+    stdout.put( "Feed Me: " );
+    stdin.geti32();
+    mov( eax, x );  // Move input into x
+
+    // Prompt for second value
+    stdout.put( "Feed Me: " );
+    stdin.geti32();
+    mov( eax, y );  // Move input into y
+    mov( y, ebx ); // Move input into ebx fo comparison
+
+    // Determine larger and smaller values
+    cmp( x, ebx );
+    jg  x_is_larger;
+    
+    cmp( ebx, x );
+    jg  y_is_larger;
+    jmp  continue_execution;
+
+x_is_larger:
+    mov( y, smallestValue );   // y is smaller
+    // Ordering
+    mov( x, first );
+    mov( y, second );
+    jmp  continue_execution;
+
+y_is_larger:
+    mov( x, smallestValue );   // x is smaller
+    // Ordering
+    mov( y, first );
+    mov( x, second );
+    jmp  continue_execution;
+
+continue_execution:
+    // Check if both values are positive
+    cmp( first, 0 );
+    jle  end_program;
+    cmp( second, 0 );
+    jle  end_program;
+
+// start loops
+repeat_first:
+
+// loop initialization
+firstLoopInit:
+    mov( 0, edx );
+
+// loop condition
+firstLoopTerminationCondition:
+    cmp( edx, smallestValue ); // is edx greater than smallest?
+    jge repeat_second; // jump to second loop when greater than or equal
+    
+// loop body
+firstLoopBody: 
+    stdout.put( first );   // Print first
+
+// loop increment
+firstLoopIncrement:
+    inc( edx );
+    jmp firstLoopTerminationCondition;
+    
+
+    // // Print second repeated second times
+    // mov( eax, second );  // Load second into eax for printing
+    // jmp repeat_second;
+
+repeat_second:
+    stdout.put( "_" );
+
+// loop initialization
+secondLoopInit:
+    mov( 0, edx );
+
+// loop condition
+secondLoopTerminationCondition:
+    cmp( edx, smallestValue ); // is edx greater than smallest?
+    jge end_program; // jump to end when greater than or equal
+
+// loop body
+secondLoopBody: 
+    stdout.put( second );   // Print second
+
+// loop increment
+secondLoopIncrement:
+    inc( edx );
+    jmp secondLoopTerminationCondition;
+
+end_program:
+    // Print newline
+    stdout.newln();
+
+end Quiz22;
