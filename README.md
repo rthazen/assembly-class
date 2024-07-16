@@ -1,1 +1,1 @@
-Santa Monica Class CS 17 Assembly Programming Code
+Santa Monica College Class CS 17 Assembly Programming Code
