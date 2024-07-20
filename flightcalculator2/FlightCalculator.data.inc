@@ -1,18 +1,14 @@
-		label	L806_userHexInput__hla_ byte
+		label	L806_input__hla_ byte
 		rb	1
-		label	L807_totalFees__hla_ dword
-		dd	00h
-		label	L808_milesFlown__hla_ byte
+		label	L807_totalCost__hla_ dword
+		rb	4
+		label	L808_miles__hla_ byte
 		rb	1
-		label	L809_numBags__hla_ byte
+		label	L809_bags__hla_ byte
 		rb	1
-		label	L810_mealPurchased__hla_ byte
+		label	L810_meal__hla_ byte
 		rb	1
 		label	L811_firstClass__hla_ byte
-		rb	1
-		label	L812_part1__hla_ byte
-		rb	1
-		label	L813_part2__hla_ byte
 		rb	1
 		label	MainPgmCoroutine__hla_ byte
 		dd	MainPgmVMT__hla_

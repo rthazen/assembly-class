@@ -1,0 +1,132 @@
+program FlightCalculator;
+#include( "stdlib.hhf" );
+
+static
+    input: uns8;
+    totalCost: uns32;
+    miles: uns8;
+    bags: uns8;
+    meal: uns8;
+    firstClass: uns8;
+
+begin FlightCalculator;
+
+    stdout.put( "Feed me (2 hex digits): " );
+    stdin.get( BL );
+
+    mov( BL, input ); // Move input to eax and zero-extend
+    and( %0000_0011, BL ); // Extract the two lowest bits for bags
+    mov( BL, bags );
+
+    mov( input, BL ); // Move input to eax and zero-extend again
+    shr( 2, BL ); // Shift right by 2 bits
+    and( %0000_1111, BL ); // Extract the next four bits for miles
+    mov( BL, miles );
+
+    mov( input, BL ); // Move input to eax and zero-extend again
+    shr( 6, BL ); // Shift right by 6 bits
+    and( %0000_0001, BL ); // Extract the next bit for meal
+    mov( BL, meal );
+
+    mov( input, BL ); // Move input to eax and zero-extend again
+    shr( 7, BL ); // Shift right by 7 bits
+    and( %0000_0001, BL ); // Extract the highest bit for first class
+    mov( BL, firstClass );
+
+    // Check if miles is zero
+    cmp( miles, 0 );
+    je milesZeroEerror;
+
+    // Calculate total cost
+    mov( 0, totalCost ); // Initialize totalCost to 0
+
+     // Move miles loop to add to total cost
+    loopAddMiles:
+    loopAddMilesInit:
+    // initialize DH for loop counter
+        mov( 0, DH );
+    loopAddMilesTerminationCondition:
+    // loop the amount of miles
+        cmp( DH, miles );
+        jge loopAddMilesEnd;
+    loopAddMilesBody:
+    // add 50 to totalCost on every loop
+        add( 50, totalCost );
+        mov(totalCost, ECX);
+    loopAddMilesIncrement:
+        inc( DH );
+        jmp loopAddMilesTerminationCondition;
+    loopAddMilesEnd:
+
+    // check if zero bags to change print
+    cmp( bags, 0 );
+    je noBags;
+
+    // check if one bag to change print
+    cmp( bags, 1 );
+    je oneBag;
+
+    loopAddBags:
+        stdout.put( bags, " bags", nl );
+    loopAddBagsInit:
+    // initialize DH for loop counter
+        mov( 0, DH );
+    loopAddBagsTerminationCondition:
+    // loop the amount of bags
+        cmp( DH, bags ); 
+        jge mealCheck;
+    loopAddBagsBody:
+    // add 25 to totalCost on every loop
+        add( 25, totalCost );
+        mov(totalCost, ECX);
+    loopAddBagsIncrement:
+        inc( DH );
+        jmp loopAddBagsTerminationCondition;
+
+    noBags:
+        stdout.put( "No bags", nl );
+        jmp mealCheck;
+
+    oneBag:
+        stdout.put( bags, " bag", nl );
+
+    mealCheck:
+    // check for meal purchase
+        cmp( meal, 0 );
+        je noMeal;
+        // add 10 to totalCost if purchased
+        add( 10, totalCost );
+        mov(totalCost, ECX);
+        stdout.put( "Meal purchased", nl );
+        jmp firstClassCheck;
+
+    noMeal:
+        stdout.put( "No meal", nl );
+        jmp firstClassCheck;
+
+    firstClassCheck:
+    // check for first class
+        cmp( firstClass, 0 );
+        je noFirstClass;
+        // double price if purchase first class
+        shl( 1, totalCost );
+        mov(totalCost, ECX);
+        stdout.put( "First class ticket", nl );
+        jmp addUp;
+
+    noFirstClass:
+        stdout.put( "Economy ticket", nl );
+        jmp addUp;
+
+    addUp:
+    // add everything up and display
+        stdout.put( miles, "00 miles flown", nl );
+        stdout.put( "Total Fees = $", totalCost, nl );
+        jmp endProgram;
+
+    milesZeroEerror:
+        stdout.put( "Miles flown cannot be zero!", nl );
+
+    endProgram:
+
+end FlightCalculator;

@@ -3,22 +3,34 @@ program AirlineTicketCalculator;
 #include( "stdlib.hhf" )
 
 static
-    userInput: uns8;          // Variable to store user input as uns8 (2 hex digits)
+    userHexInput: uns8;          // Variable to store user input as uns8 (2 hex digits)
     totalFees: int32 := 0;    // Variable to accumulate total fees
     milesFlown: uns8;         // Variable to store miles flown in 100 mile increments
     numBags: uns8;            // Variable to store number of checked bags
     mealPurchased: boolean;   // Flag to indicate if meal is purchased
     firstClass: boolean;      // Flag to indicate first class ticket
+    part1: uns8;      // Variable to store the first part of the hex value
+    part2: uns8;
 
 begin AirlineTicketCalculator;
 
     // Prompt and read user input
     stdout.put( "Feed me (2 hex digits): " );
-    stdin.get(bl);
-    mov( bl, userInput );     // Move input to userInput
+    stdin.get(BL);
+    mov( BL, userHexInput );     // Move input to userInput
 
-    stdout.put(userInput, nl);
-    stdout.putu8(bl);
+    stdout.put(userHexInput, nl);
+    stdout.putu8(BL);
+
+    and( %1111_0000, BL );
+
+    shr(4, BL);
+    mov(BL, part1);
+
+    stdout.put("First part (high nibble): 0x");
+    stdout.put(part1, "h", nl);
+
+
 
     // Extract information from the packed bit field
 //     mov( bl, al );            // Move userInput to bl

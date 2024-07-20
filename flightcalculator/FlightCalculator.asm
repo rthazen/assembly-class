@@ -80,22 +80,36 @@ _HLAMain       :
 		push	ebp		;/* Main's display. */
 
 
-		push	L825_str__hla_
+		push	L827_str__hla_
 		call	STDOUT_PUTS	; puts
 		push	eax
 		call	STDIN_GETB	; getb
 		mov	bl, al
 		pop	eax
-		mov	byte ptr [L806_userInput__hla_+0], bl	;/* userInput */
+		mov	byte ptr [L806_userHexInput__hla_+0], bl	;/* userHexInput */
 		push	dword 00h
 		push	eax
-		mov	al, byte ptr [L806_userInput__hla_+0]	; (type uns8 userInput)
+		mov	al, byte ptr [L806_userHexInput__hla_+0]	; (type uns8 userHexInput)
 		mov	byte ptr [ESP+4], al
 		pop	eax
 		call	STDOUT_PUTU8	; putu8
 		call	STDOUT_NEWLN	; newln
 		push	ebx
 		call	STDOUT_PUTU8	; putu8
+		and	bl, 240
+		shr	bl, 4
+		mov	byte ptr [L812_part1__hla_+0], bl	;/* part1 */
+		push	L868_str__hla_
+		call	STDOUT_PUTS	; puts
+		push	dword 00h
+		push	eax
+		mov	al, byte ptr [L812_part1__hla_+0]	; (type uns8 part1)
+		mov	byte ptr [ESP+4], al
+		pop	eax
+		call	STDOUT_PUTU8	; putu8
+		push	L888_str__hla_
+		call	STDOUT_PUTS	; puts
+		call	STDOUT_NEWLN	; newln
 QuitMain__hla_:
 		push	dword 00h
 		call	dword ptr [__imp__ExitProcess@4]
