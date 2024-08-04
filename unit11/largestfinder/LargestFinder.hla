@@ -1,0 +1,93 @@
+program LargestFinder;
+#include( "stdlib.hhf" );
+static
+    iValue1 : int16 := 0;
+    iValue2 : int16 := 0;
+    iValue3 : int16 := 0;
+
+// Function declaration
+procedure findLargest( x: int16; y: int16; z: int16 ); @nodisplay; @noframe;
+// this caller must free up AX
+static
+    iReturnAddress : dword;
+    iMax : int16;
+begin findLargest;
+    // entry sequence
+    // acquire parameters on the stack
+    pop( iReturnAddress );
+    pop( z );
+    pop( y );
+    pop( x );
+
+    // push back the return address
+    push( iReturnAddress );
+    // preserve registers --- NONE
+
+
+    // perform subtask
+    // calculate x - y
+    mov( x, AX );
+    sub( y, AX );
+    cmp( AX, 0 );
+    jg XisLarger;
+    jmp YisLarger;
+
+    // calculate x - z
+    XisLarger:
+        mov( x, AX );
+        sub( z, AX );
+        cmp( AX, 0 );
+        jg PutXinAX;
+        jmp PutZinAX;
+
+    // calculate y - z
+    YisLarger:
+        mov( y, AX );
+        sub( z, AX );
+        cmp( AX, 0 );
+        jg PutYinAX;
+        jmp PutZinAX;
+
+    PutXinAX:
+        mov( x, iMax );
+        jmp ExitSequence;
+    PutYinAX:
+        mov( y, iMax );
+        jmp ExitSequence;
+    PutZinAX:
+        mov( z, iMax );
+        jmp ExitSequence;
+
+    ExitSequence:
+    // exit sequence
+    // send return value to AX
+    mov( iMax, AX );
+    ret();
+end findLargest;
+
+begin LargestFinder;
+
+    // Read inputs from user
+    stdout.put( "Feed Me X: " );
+    stdin.get( iValue1 );
+
+    stdout.put( "Feed Me Y: " );
+    stdin.get( iValue2 );
+
+    stdout.put( "Feed Me Z: " );
+    stdin.get( iValue3 );
+
+    // Call the findLargest function
+    push( iValue1 );
+    push( iValue2 );
+    push( iValue3 );
+
+    call findLargest;
+    
+
+    // Print the result
+    stdout.put( "AX = " );
+    stdout.puti16( AX );
+    stdout.newln();
+
+end LargestFinder;

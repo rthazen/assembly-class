@@ -1,0 +1,58 @@
+program SameFunction;
+#include( "stdlib.hhf" );
+
+// Function declaration
+procedure theSame(w: int16; x: int16; y: int16; z: int16); @nodisplay; @noframe;  
+begin theSame;
+    // Return Address
+    pop(EDX);          
+    pop(z);
+    pop(y);
+    pop(x);
+    pop(w);
+    // Return Address
+    push(EDX);         
+    mov(z, BX);
+    // Compare z & y
+    cmp(y, BX);        
+    jne ReturnZero;
+    mov(y, BX);
+    // Compare y & x
+    cmp(x, BX);        
+    jne ReturnZero;
+    mov(x, BX);
+    // Compare x & w
+    cmp(w, BX);        
+    jne ReturnZero;
+    mov(1, AL);
+    jmp ExitSequence;
+    ReturnZero:
+        mov(0, AL);
+    ExitSequence:
+        ret();
+end theSame;
+
+begin SameFunction;
+    // inputs & outputs
+    stdout.put("Feed Me W: ");
+    stdin.geti16();
+    push(AX);
+    stdout.put("Feed Me X: ");
+    stdin.geti16();
+    push(AX);
+    stdout.put("Feed Me Y: ");
+    stdin.geti16();
+    push(AX);
+    stdout.put("Feed Me Z: ");
+    stdin.geti16();
+    push(AX);
+    call theSame;
+    cmp(AL, 1);
+    jne NumbersAreDifferent;
+    stdout.put("Same. AL = 1");
+    jmp EndProgram;
+    NumbersAreDifferent:
+        stdout.put("Not the same. AL = 0");
+    EndProgram:
+
+end SameFunction;
