@@ -1,0 +1,117 @@
+program TaxTierCalculator;
+
+#include( "stdlib.hhf" )
+static
+    income: real32;
+    tier_code: byte := 0;
+
+procedure irs( income: real32 ); @nodisplay; @noframe;
+static
+    returnAddress : dword;
+    TIER_A: real32 := 11599.99;
+    TIER_B: real32 := 47149.99;
+    TIER_C: real32 := 100524.99;
+    TIER_D: real32 := 191949.99;
+    resultValue: byte := 0;
+begin irs;
+
+    pop(returnAddress);
+    pop(income);
+    push(returnAddress);
+
+    // Initialize FPU
+    finit();
+
+    // Compare income with TIER_A
+    // Is income < TIER_A??
+    fld( TIER_A ); // load tier A
+    fld( income ); // load income
+    fcomp(); // with no args, works with st0 and st1
+    fstsw( ax ); // copy status into ax
+    sahf(); // copy ax into EFLAGS
+    setb( al ); // al = true if st1 < st0
+    cmp( al, 1 ); // test for true
+    je yesTierA;               
+
+    // Compare income with TIER_B
+    fld( TIER_B );
+    fld( income );
+    fcomp();
+    fstsw( ax );
+    sahf(); // copy ax into EFLAGS
+    setb( al ); // al = true if st1 < st0
+    cmp( al, 1 ); // test for true
+    je yesTierB;    
+
+    // Compare income with TIER_C
+    fld( TIER_C );
+    fld( income );
+    fcomp();
+    fstsw( ax );
+    sahf(); // copy ax into EFLAGS
+    setb( al ); // al = true if st1 < st0
+    cmp( al, 1 ); // test for true
+    je yesTierC; 
+
+    // Compare income with TIER_D
+    fld( TIER_D );
+    fld( income );
+    fcomp();
+    fstsw( ax );
+    sahf(); // copy ax into EFLAGS
+    setb( al ); // al = true if st1 < st0
+    cmp( al, 1 ); // test for true
+    je yesTierD; 
+
+    // If income is greater than TIER_D
+    jmp yesTierE;
+
+    
+
+yesTierA:
+    mov( 'A', al );
+    jmp end_irs;
+
+yesTierB:
+    mov( 'B', al );
+    jmp end_irs;
+
+yesTierC:
+    mov( 'C', al );
+    jmp end_irs;
+
+yesTierD:
+    mov( 'D', al );
+    jmp end_irs;
+
+yesTierE:
+    mov( 'E', al );
+    jmp end_irs;
+
+
+end_irs:
+    ret();
+
+end irs;
+
+begin TaxTierCalculator;
+
+    // Prompt for income
+    stdout.put( "Gimme income: " );
+    stdin.get(income);
+    // mov( eax, income );
+
+    push( income );
+
+    // Call the irs procedure
+    call irs;
+
+    // Retrieve the result
+    mov( al, tier_code );
+
+    // Print the result
+    stdout.put( "IRS tax tier code: " );
+    stdout.putc( tier_code );
+    stdout.newln();
+
+end TaxTierCalculator;

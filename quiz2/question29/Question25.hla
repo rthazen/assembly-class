@@ -1,0 +1,56 @@
+program Question25;
+
+#include("stdlib.hhf")
+
+static
+    x: real32; // Example value
+    y: real32; // Example value
+    five: real32 := 5.0;
+    sixPointOne: real32 := 6.1;
+    sevenPointThree: real32 := 7.3;
+    resultComputed: real32;
+
+begin Question25;
+
+    stdout.put( "Get x: " );
+    stdin.get(x);
+
+    stdout.put( "Get 2: " );
+    stdin.get(y);
+
+    // Initialize the FPU
+    finit();
+
+    // Load x into FPU stack
+    fld(x);        // Load x onto ST(0)
+    fld(x);
+    fmul();
+    fld(x);
+    fmul();
+    fld(five);
+    fmul();
+
+    fld(y);
+    fld(y);
+    fmul();
+    fld(sixPointOne);
+    fmul();
+    fmul();
+
+    fld(sevenPointThree);
+    fsub();
+
+    fld(x);
+    fld(y);
+    fsub();
+    fmul();
+
+    // Store the result in the variable result
+    fstp(resultComputed); // Pop the result from ST(0) to result
+
+    // Print the result
+    stdout.put("The result is: ");
+    stdout.putr32(resultComputed, 10, 4); // Print result with 3 decimal places
+    stdout.newln();
+
+end Question25;

@@ -1,0 +1,92 @@
+program Question30;
+
+#include("stdlib.hhf")
+    // Declare variables for input values
+    static
+        value1 : int8;
+        value2 : int8;
+        value3 : int8;
+
+procedure sumIsPositive( value1 : int8; value2 : int8; value3 : int8 ); @nodisplay; @noframe;
+static
+    iReturnAddress : dword;
+    iTemporary : int16;
+    iRegisterValue : dword;
+begin sumIsPositive;
+
+    // entry sequence
+    // preserve registers --- EBX place on stack after pops
+    mov( EBX, iRegisterValue );
+
+    // acquire parameters on the stack
+    pop( iReturnAddress );
+    pop( iTemporary ); // this is junk to align the stack
+    pop( iTemporary ); // this is value3
+    mov( iTemporary, BX );
+    mov( BL, value3 );
+
+    pop( iTemporary ); // this is value2
+    mov( iTemporary, BX );
+    mov( BL, value2 );
+
+    pop( iTemporary ); // this is value1
+    mov( iTemporary, BX );
+    mov( BL, value1 );
+
+    push(iReturnAddress);
+
+    // preserve registers --- EBX
+    push( iRegisterValue );
+
+    // Compute sum of values
+    mov( value1, al );
+    mov( value2, bl );
+    add( al, bl );
+    mov( bl, al ); // Store intermediate result in AL
+    mov( value3, bl );
+    add( al, bl ); // AL now contains sum of value1, value2, value3
+    
+    // Set DX to 1 if sum > 0, else 0
+    cmp( al, 0 );
+    jg positive;
+    mov( 0, dx ); // sum <= 0
+    stdout.put("sumIsPositive returned false!", nl);
+    jmp done;
+    
+    positive:
+        mov( 1, dx ); // sum > 0
+        stdout.put("sumIsPositive returned true!", nl);
+    
+    done:
+        ret();
+end sumIsPositive;
+
+begin Question30;
+
+    // Prompt user for values
+    stdout.put("Provide a value: ");
+    stdin.get( value1 );
+    
+    stdout.put("Provide a value: ");
+    stdin.get( value2 );
+    
+    stdout.put("Provide a value: ");
+    stdin.get( value3 );
+
+    // only 16-bit values can be pushed
+    mov( 0, BX );
+    mov( value1, BL );
+    push( BX );
+    mov( 0, BX );
+    mov( value2, BL );
+    push( BX );
+    mov( 0, BX );
+    mov( value3, BL );
+    push( BX );
+    // not even multiple of 32-bits pushed onto stack
+    // so I am pushing one last piece of junk
+    mov( 0, BX );
+    push( BX );
+    call sumIsPositive;
+
+end Question30;

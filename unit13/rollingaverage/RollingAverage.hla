@@ -1,0 +1,74 @@
+program RollingAverageCalculator;
+
+#include("stdlib.hhf")
+
+static
+    finalAverage: real32;
+
+procedure recursiveProcedure; @nodisplay; @noframe;
+static
+    sum: real32 := 0.0;
+    count: int32 := 0;
+    average: real32;
+    dataPoint: real32;
+    response: byte := 0;
+    no: byte := $6E; // ASCII 'n'
+    yes: byte := $79; // ASCII 'y'
+
+begin recursiveProcedure;
+    // Prompt for a data point
+    stdout.put("enter data point: ");
+    stdin.get(dataPoint);
+    // mov(eax, dataPoint);
+
+    // Initialize FPU
+    finit();
+
+    // Update sum and count
+    fld(sum);
+    fld(dataPoint);
+    fadd();
+    fstp(sum);
+    inc(count);
+
+    // Calculate the rolling average
+    fld(sum);
+    fild(count);
+    fdiv();
+    fstp(average);
+
+    // Print the rolling average
+    stdout.put("rolling average = ");
+    stdout.putr32(average, 10, 3);
+    stdout.newln();
+
+    // Ask if the user wants to enter more data
+    stdout.put("more data? ");
+    stdin.flushInput();
+    stdin.getc();
+    mov(al, response);
+
+    cmp(al, yes);
+    je keepGoing;
+    jmp endRecursiveLoop;
+
+    keepGoing:
+        call recursiveProcedure;
+
+    endRecursiveLoop: 
+        // Store the final average in finalAverage
+        fld(average);
+        fstp(finalAverage);
+        ret();
+
+end recursiveProcedure;
+
+begin RollingAverageCalculator;
+    call recursiveProcedure;
+
+    // Print the final rolling average
+    stdout.put("final rolling average = ");
+    stdout.putr32(finalAverage, 10, 3);
+    stdout.newln();
+
+end RollingAverageCalculator;
