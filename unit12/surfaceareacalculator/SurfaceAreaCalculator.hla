@@ -1,0 +1,90 @@
+program SurfaceAreaCalculator;
+
+#include("stdlib.hhf")
+// Declare variables for radius and height
+static
+    radius: real32;
+    height: real32;
+
+procedure surfaceFinder( r: real32; h : real32 ); @nodisplay; @noframe;
+    // Declare local variables
+    static
+        returnAddress : dword;
+        surfaceAreaSphere: real32;
+        surfaceAreaCube: real32;
+        surfaceAreaCylinder: real32;
+        two: real32:= 2.000;
+        four: real32:= 4.000;
+        six: real32:= 6.000;
+begin surfaceFinder;
+    pop(returnAddress);
+    pop(h);
+    pop(r);
+    push(returnAddress);
+
+    // Initialize the FPU
+    finit();
+
+    // Calculate the surface area of the sphere: 4 * pi * r^2
+    fld( r );               // Load r onto the stack
+    fld( r );
+    fmul();            // st0 = r * r
+    fldpi();              // Load pi onto the stack
+    fmul();      // st1 = pi * (r * r)
+    fld( four );
+    fmul();      // st1 = 4 * pi * (r * r)
+    fstp( surfaceAreaSphere ); // Store the result in surfaceAreaSphere
+
+    // Calculate the surface area of the cube: 6 * h^2
+    fld( h );               // Load h onto the stack
+    fld( h );
+    fmul();            // st0 = h * h
+    fld( six );
+    fmul();      // st1 = 6 * (h * h)
+    fstp( surfaceAreaCube );   // Store the result in surfaceAreaCube
+
+    // Calculate the surface area of the cylinder: 2 * pi * r * (r + h)
+    fld( r );               // Load r onto the stack
+    fld( r );               // Load r onto the stack
+    fmul();            // st0 = r * r
+    fld( r );           // Load r onto the stack at st1
+    fld( h );           // Load h onto the stack at st2
+    fmul();             // multiply r * h into st1
+    fadd();                // add st0 and st1
+    fldpi();              // Load pi onto the stack
+    fmul();      // st1 = pi * st0
+    fld( two );               // Load r onto the stack
+    fmul();      // st1 = 2 * st0
+    fstp( surfaceAreaCylinder ); // Store the result in surfaceAreaCylinder
+
+    // Print the results
+    stdout.put("Surface Area of a sphere = ");
+    stdout.putr32(surfaceAreaSphere, 10, 5);
+    stdout.newln();
+    stdout.put("Surface Area of a cube = ");
+    stdout.putr32(surfaceAreaCube, 10, 5);
+    stdout.newln();
+    stdout.put("Surface Area of a cylinder = ");
+    stdout.putr32(surfaceAreaCylinder, 10, 5);
+    stdout.newln();
+
+    ret();
+
+end surfaceFinder;
+
+begin SurfaceAreaCalculator;
+
+    // Prompt the user for input
+    stdout.put("Lemme calculate the surface area of various things in inches!", nl);
+    stdout.put("Gimme r: ");
+    stdin.get(radius);
+    stdout.put("Gimme h: ");
+    stdin.get(height);
+
+    push( radius );
+    push( height );
+
+    // Call the surfaceFinder procedure
+    call surfaceFinder;
+
+end SurfaceAreaCalculator;

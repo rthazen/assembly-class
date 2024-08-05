@@ -1,0 +1,97 @@
+program DistanceCalculator;
+
+#include( "stdlib.hhf" )
+static
+    x1: real32;
+    x2: real32;
+    y1: real32;
+    y2: real32;
+
+procedure distance( x1: real32; x2: real32; y1: real32; y2: real32 ); @nodisplay; @noframe;
+    static
+        returnAddress : dword;
+        xSubValue: real32;
+        ySubValue: real32;
+        dist: real32;
+begin distance;
+    pop(returnAddress);
+    pop(y2);
+    pop(y1);
+    pop(x2);
+    pop(x1);
+    push(returnAddress);
+
+    // Initialize the FPU
+    finit();
+    // Calculate dx = x1 - x2
+    fld( x1 );
+    fld( x2 );
+    fsub();
+    fstp( xSubValue );
+
+    // Calculate dx^2
+    fld( xSubValue );
+    fld( xSubValue );
+    fmul();
+    fstp( xSubValue );
+
+    // Calculate dy = y1 - y2
+    fld( y1 );
+    fld( y2 );
+    fsub();
+    fstp( ySubValue );
+
+    // Calculate dy^2
+    fld( ySubValue );
+    fld( ySubValue );
+    fmul();
+    fstp( ySubValue );
+
+    // Calculate dx^2 + dy^2
+    fld( xSubValue );
+    fld( ySubValue );
+    fadd();
+    fstp( dist );
+
+    // Calculate sqrt(dx^2 + dy^2)
+    fld( dist );
+    fsqrt();
+    fstp( dist );
+
+    // Print the distance
+    stdout.put( "The distance between points A and B is " );
+    stdout.putr32( dist, 10, 5 );
+    stdout.newln();
+    ret();
+
+end distance;
+
+
+
+begin DistanceCalculator;
+
+    // Prompt for x1
+    stdout.put( "Gimme a value for x1: " );
+    stdin.get(x1);
+
+    // Prompt for x2
+    stdout.put( "Gimme a value for x2: " );
+    stdin.get(x2);
+
+    // Prompt for y1
+    stdout.put( "Gimme a value for y1: " );
+    stdin.get(y1);
+
+    // Prompt for y2
+    stdout.put( "Gimme a value for y2: " );
+    stdin.get(y2);
+
+    push( x1 );
+    push( x2 );
+    push( y1 );
+    push( y2 );
+
+    // Call the distance procedure
+    call distance;
+
+end DistanceCalculator;

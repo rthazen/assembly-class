@@ -1,0 +1,33 @@
+program FPUCompare;
+#include( "stdlib.hhf" );
+static
+    x : real32;
+    y : real32;
+begin FPUCompare;
+  stdout.put ("Feed Me X:");
+  stdin.get( x );
+  stdout.put ("Feed Me Y:");
+  stdin.get( y );
+
+  // Is y < x??
+  finit();
+  fld( x );              // Load X.
+  fld( y );              // Load Y.
+  fcomp();               // with no args, works with st0 and st1
+  fstsw( ax );           // copy status into ax
+  sahf( );               // copy ax into EFLAGS
+  setb( al );            // al = true if st1 < st0
+  cmp( al, 1 );          // test for true
+  je yes;               
+  jmp no;            
+
+yes:
+  stdout.put( "yes y < x!", nl );
+  jmp theend;
+
+no:
+  stdout.put( "no, y < x", nl );
+
+theend:
+
+end FPUCompare;
