@@ -1,0 +1,135 @@
+// String Parameter Template Solution For CS 17 Final
+// CS 17 Students must use this template as the basis for their solution.
+
+// Please look at the two TODO: notes below
+
+program StringProgram;
+
+#include( "stdlib.hhf" );
+// The file cs17string.hla is downloadable from the hyperlink shown above.
+// Place it in the same folder as this hla file you are working on
+
+#include( "cs17string.hla" );
+
+static
+  stringData : dword;
+  answer : int32;
+
+// TODO: CS 17 Students add code below to implement this function
+// Several hints are supplied
+
+procedure endsWithDigit( stringData : dword ); @nodisplay; @noframe;
+static
+dReturnAddress : dword;
+wDXRegister  : word  := 0;   // preserve DX
+dEBXRegister : dword := 0;   // preserve EBX
+iTemporary: int16;
+begin endsWithDigit;
+    
+    // TODO: CS 17 Students will need to preserve registers
+    mov( EBX, dEBXRegister );
+    mov( DX, wDXRegister );
+    pop( dReturnAddress );
+    
+
+    // TODO: CS 17 Students need to get stringData off the stack
+    pop( EBX );
+
+    // push back the return address
+    push( dReturnAddress );
+    
+
+    // preserve registers
+    push( dEBXRegister );
+    push( wDXRegister );
+    
+
+    // begin function implementation
+    mov( 0, DX );            // EBX will be the address of string[i]
+
+    ForLoop:
+        cmp( [ EBX ], DH );
+        je ForLoopEnd;
+        mov( [EBX] , iTemporary ); 
+        inc( EBX );
+        jmp ForLoop;
+    ForLoopEnd:
+
+    cmp(iTemporary, '0');
+    jl setFalse;
+    
+    cmp( iTemporary, '9' );    // Compare with '9'
+    jg setFalse;      // If greater, it's not a digit
+
+
+
+    // leave the answer in EAX
+    setTrue:
+        mov(1, EAX);
+        jmp done;
+    
+    setFalse:
+        mov(0, EAX);
+        jmp done;
+
+    // restore the registers used
+    done: 
+        pop( DX );
+        pop( EBX );
+        ret();
+
+end endsWithDigit;
+
+begin StringProgram; 
+
+stdout.put( "Please enter a string to process", nl );
+
+// this code allocates a string of size 80
+
+mov( @size( int8 ), AL );
+mov( 80, BL );
+inc( BL );
+mul( BL );
+mov( 0, EBX );
+mov( AX, BX );
+malloc( EBX );
+mov( EAX, stringData );
+
+// let's try reading a value into the string
+mov( stringData, EAX );
+push( EAX );
+mov( 80, CX );
+push( CX );
+
+call gets;
+
+// print the string
+
+stdout.put( "----> here is the string you entered: " );
+
+mov( stringData, EAX );
+push( EAX );
+call puts;
+
+stdout.newln();
+
+// initialize EAX before calling the function.
+
+mov( 0, EAX );
+
+
+// TODO: CS 17 Students need to pass a string parameter to the function
+mov( stringData, EAX );
+push(EAX);
+
+call endsWithDigit;
+mov( EAX, answer );
+
+
+// show the results
+stdout.put( "after endsWithDigit --- result=" );
+stdout.put( answer );
+stdout.newln();
+free( stringData );
+
+end StringProgram;

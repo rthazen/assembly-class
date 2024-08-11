@@ -1,0 +1,71 @@
+// File: PointerExample
+program PointerExample;
+#include( "stdlib.hhf" );
+
+static
+i : int8 := 12;
+j : int8 := 14;
+pI : dword;  // all pointers are 32-bit values
+
+procedure swap( var i: int8; var j : int8 ); @nodisplay; @noframe;
+// uses the registers EDX, ECX and EBX
+static
+dReturnAddress : dword;
+iTemporary : int8;
+
+dEDXRegister : dword := 0; // preserve EDX
+dECXRegister : dword := 0; // preserve ECX
+dEBXRegister : dword := 0; // preserve EBX
+begin swap;
+// entry sequence
+// preserve registers
+mov( EBX, dEBXRegister );
+mov( ECX, dECXRegister );
+mov( EDX, dEDXRegister );
+pop( dReturnAddress ); // This is the return address
+pop( EBX ); // This is the address of j
+pop( ECX ); // This is the address of i
+// push back the return address
+push( dReturnAddress );
+// preserve registers
+push( dEDXRegister );
+push( dECXRegister );
+push( dEBXRegister );
+
+// begin sub-task
+mov( [EBX], DL ); // DL = j
+mov( DL, iTemporary ); // temporary = j
+mov( [ECX], DL ); // DL = i
+mov( DL, [EBX] ); // j = i
+mov( iTemporary, DL ); // CL = j
+mov( DL, [ECX] ); // i = temporary
+
+// exit sequence
+// restore registers
+pop( EBX );
+pop( ECX );
+pop( EDX );
+// transfer control
+ret( ) ;
+end swap;
+
+begin PointerExample;
+
+
+lea( EAX, i); // get address of i
+mov( EAX, pI );
+
+mov( 13, i );
+mov( pI, EBX );
+mov( 13, CL );
+mov( CL, [ EBX ] );
+
+
+stdout.put( "BEFORE SWAP: i = ", i, " j = ", j, nl );
+lea( EAX, i); // get address of i
+push( EAX );
+lea( EAX, j); // get address of j
+push( EAX );
+call swap;
+stdout.put( "AFTER SWAP: i = ", i, " j = ", j, nl );
+end PointerExample;

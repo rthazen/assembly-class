@@ -1,0 +1,58 @@
+// File: strlenProgram.hla
+program strlenProgram;
+#include("stdlib.hhf")
+#include("cs17string.hla")
+
+procedure strlen(baseStringAddress: dword); @nodisplay; @noframe;
+static
+    dStringLength : int8;
+begin strlen;
+    // Initialize the string length to 0
+    mov(0, dStringLength);
+
+    // Loop through the string until null character is found
+    strlenLoop:
+        mov([baseStringAddress], AL);  // Load the current character
+        cmp(AL, 0);                    // Compare it with null character
+        je strlenEnd;                  // If null, end the loop
+        inc(dStringLength);            // Increment the string length
+        inc(baseStringAddress);        // Move to the next character
+        jmp strlenLoop;                // Repeat the loop
+
+    strlenEnd:
+        mov(dStringLength, AL);        // Return the string length in AL
+        ret();
+end strlen;
+
+static
+    inputBuffer: byte[128];            // Buffer to hold user input
+    stringData : byte[128];            // Buffer for string data (initially empty)
+    stringDataLen : uns16 := 127;      // Max number of chars the string can hold (excluding NULL)
+    stringLength: byte;
+
+begin strlenProgram;
+    // Prompt the user to enter some text
+    stdout.put("Please enter some text to work with and hit Return!", nl);
+
+    // Read input into inputBuffer using stdin.gets
+    mov(&inputBuffer, eax);
+    stdin.gets(eax);
+
+    // Copy inputBuffer to stringData and ensure it's null-terminated
+    mov(eax, edi);
+    mov(&stringData, esi);
+    repeat
+        movsb;
+    untilnzc;
+
+    // Call the strlen function to calculate the string length
+    lea(eax, stringData);  // Load effective address of stringData into EAX
+    push(eax);
+    call strlen;
+
+    // Store the returned length
+    mov(AL, stringLength);
+
+    // Display the result
+    stdout.put("The String You Entered: ", stringData, " Has Length = ", stringLength, nl);
+end strlenProgram;

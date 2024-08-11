@@ -1,0 +1,20 @@
+// File: PointerProgram.hla
+program PointerProgram;
+#include( "stdlib.hhf" );
+
+static
+iValue : int8 := 0; // the value to inspect
+
+begin PointerProgram;
+
+stdout.put( "Gimme a value: " );
+stdin.get( iValue );
+
+// let me try mucking with it, without using the name iValue
+mov( &iValue, EBX ); // [EBX] now refers to iValue! and that address points at an 8 bit value
+mov( 13, AH ); // my favorite number
+mov( AH, [EBX]); // that address points at an 8 bit value
+
+// show the results
+stdout.put( "I changed it to: ", iValue, nl );
+end PointerProgram;

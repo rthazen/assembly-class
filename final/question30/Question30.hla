@@ -1,0 +1,117 @@
+// Reference Parameter Template Solution For CS 17 Final
+// CS 17 Students must use this template as the basis for their solution. I hope it will help simplify your development task.
+// Please look at the two TODO: notes below
+
+program ReferenceProgram ;
+#include( "stdlib.hhf" );
+static
+iValue1 : int16 := 0;
+iValue2 : int16 := 0;
+iValue3 : int16 := 0;
+
+
+// TODO: CS 17 Students add code below to implement this function
+// Several hints are supplied
+procedure makeThirtyIfOneIsZero( var i : int16; var j : int16; var k : int16 );@nodisplay; @noframe;
+static
+dReturnAddress : dword;
+iTemporary : int16;
+
+dEDXRegister : dword := 0; // preserve EDX
+dECXRegister : dword := 0; // preserve ECX
+dEBXRegister : dword := 0; // preserve EBX
+
+begin makeThirtyIfOneIsZero ;
+
+
+// entry sequence
+// preserve registers used
+mov( EBX, dEBXRegister );
+mov( ECX, dECXRegister );
+mov( EDX, dEDXRegister );
+
+pop( dReturnAddress );  // this is the return address
+
+// process the passed reference parameters
+pop( EBX ); // This is the address of k
+pop( ECX ); // This is the address of j
+pop( EDX ); // This is the address of i
+
+// push back the return address
+push( dReturnAddress );
+
+// preserve registers
+push( dEDXRegister );
+push( dECXRegister );
+push( dEBXRegister );
+
+// begin sub-task
+// stdout.put( "EDX value: ", EDX, nl );
+mov( [EDX], iTemporary ); // AL = i
+cmp(iTemporary, 0);
+je makeAllThirty;
+
+mov( [ECX], iTemporary ); // AL = j
+cmp(iTemporary, 0);
+je makeAllThirty;
+
+mov( [EBX], iTemporary ); // AL = k
+cmp(iTemporary, 0);
+je makeAllThirty;
+jmp done;
+
+makeAllThirty:
+    mov(30, iTemporary);
+    mov(iTemporary,[EDX]);
+    mov(iTemporary, [ECX]);
+    mov(iTemporary, [EBX]);
+// restore the registers used
+
+done: 
+    pop( EBX );
+    pop( ECX );
+    pop( EDX );
+
+    ret();
+
+end makeThirtyIfOneIsZero ;
+
+ 
+
+begin ReferenceProgram ;
+
+ 
+
+stdout.put( "gimme three values!" );
+
+stdin.get( iValue1 );
+stdin.get( iValue2 );
+stdin.get( iValue3 );
+
+// TODO: push parameters to the function.
+// Please remember that these parameters must be passed by-reference.
+mov(&iValue1, EAX);
+push( EAX );
+
+mov(&iValue2, EAX);
+push( EAX );
+
+mov(&iValue3, EAX);
+push( EAX );
+
+call makeThirtyIfOneIsZero ;
+
+
+stdout.put( "after makeThirtyIfOneIsZero!" );
+stdout.newln();
+stdout.put( "the first parameter = " );
+stdout.put( iValue1 );
+stdout.put( " the second parameter = " );
+stdout.put( iValue2 );
+stdout.put( " the third parameter = " );
+stdout.put( iValue3 );
+stdout.newln();
+
+ 
+
+end ReferenceProgram ;
