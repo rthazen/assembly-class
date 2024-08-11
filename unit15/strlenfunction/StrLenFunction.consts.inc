@@ -1,18 +1,20 @@
 
 		align	4
-		label	L843_len__hla_ word
-		dd	033h
-		dd	033h
-		label	L843_str__hla_ byte
-		db	"Please enter some text to work with and hit Return!"
+		label	L844_len__hla_ word
+		dd	09h
+		dd	09h
+		label	L844_str__hla_ byte
+		db	"Feed Me: "
 		db	0
 
+		db	0
+		db	0
 
 		align	4
-		label	L865_len__hla_ word
+		label	L862_len__hla_ word
 		dd	018h
 		dd	018h
-		label	L865_str__hla_ byte
+		label	L862_str__hla_ byte
 		db	"The String You Entered: "
 		db	0
 

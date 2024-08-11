@@ -3,56 +3,88 @@ program strlenProgram;
 #include("stdlib.hhf")
 #include("cs17string.hla")
 
+static
+    stringData : dword;
+    stringDataLen : int16 := 0; // number of chars in string
+
 procedure strlen(baseStringAddress: dword); @nodisplay; @noframe;
 static
-    dStringLength : int8;
+    dReturnAddress: dword;
+    wDXRegister  : word  := 0;   // preserve DX
+    dEBXRegister : dword := 0;   // preserve EBX
 begin strlen;
-    // Initialize the string length to 0
-    mov(0, dStringLength);
 
-    // Loop through the string until null character is found
-    strlenLoop:
-        mov([baseStringAddress], AL);  // Load the current character
-        cmp(AL, 0);                    // Compare it with null character
-        je strlenEnd;                  // If null, end the loop
-        inc(dStringLength);            // Increment the string length
-        inc(baseStringAddress);        // Move to the next character
-        jmp strlenLoop;                // Repeat the loop
+    mov( EBX, dEBXRegister );
+    mov( DX, wDXRegister );
+    pop( dReturnAddress );
+    
 
-    strlenEnd:
-        mov(dStringLength, AL);        // Return the string length in AL
+    // TODO: CS 17 Students need to get stringData off the stack
+    pop( EBX );
+
+    // push back the return address
+    push( dReturnAddress );
+    
+
+    // preserve registers
+    push( dEBXRegister );
+    push( wDXRegister );
+    
+
+    // begin function implementation
+    mov( 0, DX );            // EBX will be the address of string[i]
+
+    // go through string and increment DX for each loop for the length
+    ForLoop:
+        cmp( [ EBX ], DH );
+        je ForLoopEnd;
+        inc( DX );
+        inc( EBX );
+        jmp ForLoop;
+    ForLoopEnd:
+
+    // restore the registers used
+    done: 
+        mov( DX, stringDataLen);
+        pop( DX );
+        pop( EBX );
         ret();
-end strlen;
 
-static
-    inputBuffer: byte[128];            // Buffer to hold user input
-    stringData : byte[128];            // Buffer for string data (initially empty)
-    stringDataLen : uns16 := 127;      // Max number of chars the string can hold (excluding NULL)
-    stringLength: byte;
+end strlen;
 
 begin strlenProgram;
     // Prompt the user to enter some text
-    stdout.put("Please enter some text to work with and hit Return!", nl);
+    stdout.put("Feed Me: ", nl);
 
-    // Read input into inputBuffer using stdin.gets
-    mov(&inputBuffer, eax);
-    stdin.gets(eax);
+    // this code allocates a string of size 80
+    mov( @size( int8 ), AL );
+    mov( 80, BL );
+    inc( BL );
+    mul( BL );
+    mov( 0, EBX );
+    mov( AX, BX );
+    malloc( EBX );
+    mov( EAX, stringData );
 
-    // Copy inputBuffer to stringData and ensure it's null-terminated
-    mov(eax, edi);
-    mov(&stringData, esi);
-    repeat
-        movsb;
-    untilnzc;
+    // let's try reading a value into the string
+    mov( stringData, EAX );
+    push( EAX );
+    mov( 80, CX );
+    push( CX );
+    call gets;
+
 
     // Call the strlen function to calculate the string length
-    lea(eax, stringData);  // Load effective address of stringData into EAX
-    push(eax);
+    mov(stringData, EAX);  // Load effective address of stringData into EAX
+    push(EAX);
     call strlen;
 
-    // Store the returned length
-    mov(AL, stringLength);
-
-    // Display the result
-    stdout.put("The String You Entered: ", stringData, " Has Length = ", stringLength, nl);
+    stdout.put( "The String You Entered: " );
+    mov( stringData, EAX );
+    push( EAX );
+    call puts;
+    stdout.put( " Has Length = " );
+    stdout.put( stringDataLen );
+    stdout.newln();
+    free( stringData );
 end strlenProgram;

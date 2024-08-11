@@ -18,16 +18,16 @@
 		dw 	00h
 		label	L819_dEBXRegister__hla_ dword
 		dd	00h
-		label	L823_dStringLength__hla_ byte
-		rb	1
-		label	L826_inputBuffer__hla_ byte
-		rb	128
-		label	L827_stringData__hla_ byte
-		rb	128
-		label	L828_stringDataLen__hla_ word
-		dw 	07fh
-		label	L829_stringLength__hla_ byte
-		rb	1
+		label	L822_stringData__hla_ dword
+		rb	4
+		label	L823_stringDataLen__hla_ word
+		dw 	00h
+		label	L825_dReturnAddress__hla_ dword
+		rb	4
+		label	L826_wDXRegister__hla_ word
+		dw 	00h
+		label	L827_dEBXRegister__hla_ dword
+		dd	00h
 		label	MainPgmCoroutine__hla_ byte
 		dd	MainPgmVMT__hla_
 		dd	00h		;/* CurrentSP */

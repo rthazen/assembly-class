@@ -127,22 +127,32 @@ L821_putsEndLoop__hla_:
 xL816_puts__hla___hla_:
 ;L816_puts__hla_ endp
 
-L822_strlen__hla_:
-		mov	byte ptr [L823_dStringLength__hla_+0], 0	;/* dStringLength */
+L824_strlen__hla_:
+		mov	dword ptr [L827_dEBXRegister__hla_+0], ebx	;/* dEBXRegister */
+		mov	word ptr [L826_wDXRegister__hla_+0], dx	;/* wDXRegister */
+		pop	dword ptr [L825_dReturnAddress__hla_+0]	;/* dReturnAddress */
+		pop	ebx
+		push	dword ptr [L825_dReturnAddress__hla_+0]	;/* dReturnAddress */
+		push	dword ptr [L827_dEBXRegister__hla_+0]	;/* dEBXRegister */
+		push	word ptr [L826_wDXRegister__hla_+0]	;/* wDXRegister */
+		mov	dx, 0
 
-L824_strlenLoop__hla_:
-		mov	al, 0
-		cmp	al, 0
-		je	L825_strlenEnd__hla_
-		inc	byte ptr [L823_dStringLength__hla_+0]	;/* dStringLength */
-		inc	dword ptr [ebp+8]	;/* baseStringAddress */
-		jmp	L824_strlenLoop__hla_
+L828_ForLoop__hla_:
+		cmp	[ebx+0], dh	;/* [ebx] */
+		je	L829_ForLoopEnd__hla_
+		inc	dx
+		inc	ebx
+		jmp	L828_ForLoop__hla_
 
-L825_strlenEnd__hla_:
-		mov	al, byte ptr [L823_dStringLength__hla_+0]	;/* dStringLength */
+L829_ForLoopEnd__hla_:
+
+L830_done__hla_:
+		mov	word ptr [L823_stringDataLen__hla_+0], dx	;/* stringDataLen */
+		pop	dx
+		pop	ebx
 		ret
-xL822_strlen__hla___hla_:
-;L822_strlen__hla_ endp
+xL824_strlen__hla___hla_:
+;L824_strlen__hla_ endp
 
 
 
@@ -171,38 +181,42 @@ _HLAMain       :
 		push	ebp		;/* Main's display. */
 
 
-		push	L843_str__hla_
+		push	L844_str__hla_
 		call	STDOUT_PUTS	; puts
 		call	STDOUT_NEWLN	; newln
-		mov	eax, L848_inputBuffer__hla_
+		mov	al, 1
+		mov	bl, 80
+		inc	bl
+		mul	bl
+		mov	ebx, 0
+		mov	bx, ax
+		push	ebx
+		call	MEM_ALLOC	; malloc
+		mov	dword ptr [L822_stringData__hla_+0], eax	;/* stringData */
+		mov	eax, dword ptr [L822_stringData__hla_+0]	;/* stringData */
 		push	eax
-		call	STDIN_GETS	; gets
-		mov	edi, eax
-		mov	esi, L849_stringData__hla_
-L850_false__hla_:
-L850_repeat__hla_:
-		movsb
-
-L851_untilnzc__hla_:
-		lea	eax, byte ptr [L827_stringData__hla_+0]	;/* stringData */
+		mov	cx, 80
+		push	cx
+		call	L806_gets__hla_
+		mov	eax, dword ptr [L822_stringData__hla_+0]	;/* stringData */
 		push	eax
-		call	L822_strlen__hla_
-		mov	byte ptr [L829_stringLength__hla_+0], al	;/* stringLength */
-		push	L865_str__hla_
+		call	L824_strlen__hla_
+		push	L862_str__hla_
 		call	STDOUT_PUTS	; puts
-		push	dword 00h
+		mov	eax, dword ptr [L822_stringData__hla_+0]	;/* stringData */
 		push	eax
-		mov	al, byte ptr [L827_stringData__hla_+0]	; (type byte stringData)
-		mov	byte ptr [ESP+4], al
-		pop	eax
-		call	STDOUT_PUTB	; putb
+		call	L816_puts__hla_
 		push	L876_str__hla_
 		call	STDOUT_PUTS	; puts
-		push	dword 00h
-		push	eax
-		mov	al, byte ptr [L829_stringLength__hla_+0]	; (type byte stringLength)
-		mov	byte ptr [ESP+4], al
-		pop	eax
-		call	STDOUT_PUTB	; putb
+		push	word 00h
+		push	word ptr [L823_stringDataLen__hla_+0]	; (type int16 stringDataLen)
+		call	STDOUT_PUTI16	; puti16
 		call	STDOUT_NEWLN	; newln
+		push	dword ptr [L822_stringData__hla_+0]	; stringData
+		call	MEM_FREE	; free
+QuitMain__hla_:
+		push	dword 00h
+		call	dword ptr [__imp__ExitProcess@4]
+;_HLAMain        endp
+
 

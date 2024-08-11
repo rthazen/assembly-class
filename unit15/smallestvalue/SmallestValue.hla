@@ -1,0 +1,128 @@
+// Reference Parameter Template Solution For CS 17 Final
+// CS 17 Students must use this template as the basis for their solution. I hope it will help simplify your development task.
+// Please look at the two TODO: notes below
+
+program ReferenceProgram ;
+#include( "stdlib.hhf" );
+static
+iValue1 : int16 := 0;
+iValue2 : int16 := 0;
+iValue3 : int16 := 0;
+
+
+// TODO: CS 17 Students add code below to implement this function
+// Several hints are supplied
+procedure smallest( var x : int16; var y : int16; var z : int16 );@nodisplay; @noframe;
+static
+dReturnAddress : dword;
+iTemporary : int16;
+// yTemporary : dword;
+// zTemporary : dword;
+smallestValue: int16;
+
+dEDXRegister : dword := 0; // preserve EDX
+dECXRegister : dword := 0; // preserve ECX
+dEBXRegister : dword := 0; // preserve EBX
+
+begin smallest ;
+
+
+// entry sequence
+// preserve registers used
+mov( EBX, dEBXRegister );
+mov( ECX, dECXRegister );
+mov( EDX, dEDXRegister );
+
+pop( dReturnAddress );  // this is the return address
+
+// process the passed reference parameters
+pop( EBX ); // This is the address of z
+pop( ECX ); // This is the address of y
+pop( EDX ); // This is the address of x
+
+// push back the return address
+push( dReturnAddress );
+
+// preserve registers
+push( dEDXRegister );
+push( dECXRegister );
+push( dEBXRegister );
+
+// begin sub-task
+mov( [EDX], DX ); // DX = x
+mov( [ECX], CX ); // CX = y
+mov( [EBX], BX ); // BX = z
+
+mov(DX, smallestValue);
+
+cmp(smallestValue, CX);
+jle xIsLess;
+mov(CX, smallestValue);
+
+yIsLess:
+    cmp(smallestValue, BX);
+    jle makeAllSmallest;
+    mov(BX, smallestValue);
+    jmp makeAllSmallest;
+
+xIsLess: 
+    cmp(smallestValue, BX);
+    jle makeAllSmallest;
+    mov(BX, smallestValue);
+
+makeAllSmallest:
+    mov(smallestValue, iValue1);
+    mov(smallestValue, iValue2);
+    mov(smallestValue, iValue3);
+// restore the registers used
+
+done: 
+    pop( EBX );
+    pop( ECX );
+    pop( EDX );
+
+    ret();
+
+end smallest ;
+
+ 
+
+begin ReferenceProgram ;
+
+ 
+
+stdout.put( "Gimme X: " );
+stdin.get( iValue1 );
+
+stdout.put( "Gimme Y: " );
+stdin.get( iValue2 );
+
+stdout.put( "Gimme Z: " );
+stdin.get( iValue3 );
+
+// push parameters to the function.
+// Please remember that these parameters must be passed by-reference.
+mov(&iValue1, EAX);
+push( EAX );
+
+mov(&iValue2, EAX);
+push( EAX );
+
+mov(&iValue3, EAX);
+push( EAX );
+
+call smallest ;
+
+
+stdout.put( "After smallest, " );
+stdout.put( "X = " );
+stdout.put( iValue1 );
+stdout.put( ", Y = " );
+stdout.put( iValue2 );
+stdout.put( ", Z = " );
+stdout.put( iValue3 );
+stdout.newln();
+
+ 
+
+end ReferenceProgram ;
